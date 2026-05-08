@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>45 DTE Earnings Risk — TQQQ / QQQ / TSLL</title>
+
+<!-- PWA / iOS home-screen install -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<meta name="theme-color" content="#0d1117">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Earnings Risk">
+<style>
+  /* =========================================================================
+     Theme tokens — switched via [data-theme] on <html>
+     ========================================================================= */
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg:        #fafafa;
+    --surface:   #ffffff;
+    --surface-2: #f3f4f6;
+    --border:    #e5e5e5;
+    --border-2:  #d4d4d4;
+    --text:      #1a1a1a;
+    --text-muted:#666;
+    --text-faint:#888;
+    --btn-bg:    #1a1a1a;
+    --btn-text:  #ffffff;
+    --focus:     #2563eb;
+    --pill-bg:   #1a1a1a;
+    --pill-text: #ffffff;
+
+    --green-bg:  #f0fdf4; --green-border:#86efac; --green-text:#065f46;
+    --yellow-bg: #fffbeb; --yellow-border:#fcd34d; --yellow-text:#92400e;
+    --orange-bg: #fff7ed; --orange-border:#fdba74; --orange-text:#9a3412;
+    --red-bg:    #fef2f2; --red-border:#fca5a5;  --red-text:#991b1b;
+
+    /* Calendar strip cells */
+    --cell-l0: #d1fae5;
+    --cell-l1: #fef3c7;
+    --cell-l2: #fed7aa;
+    --cell-l3: #fecaca;
+    --cell-event: #1a1a1a;
+    --cell-divider: rgba(255,255,255,0.45);
+    --cell-border: #ddd;
+
+    --badge-bg-est: #f3f4f6;  --badge-text-est: #555;
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg:        #0d1117;
+    --surface:   #161b22;
+    --surface-2: #1f242c;
+    --border:    #2a313c;
+    --border-2:  #3a4150;
+    --text:      #e6edf3;
+    --text-muted:#9ba3af;
+    --text-faint:#7a8290;
+    --btn-bg:    #e6edf3;
+    --btn-text:  #0d1117;
+    --focus:     #58a6ff;
+    --pill-bg:   #e6edf3;
+    --pill-text: #0d1117;
+
+    --green-bg:  #0f2b1f; --green-border:#1f6f4a; --green-text:#6ee7b7;
+    --yellow-bg: #2c2208; --yellow-border:#a16207; --yellow-text:#fcd34d;
+    --orange-bg: #2d1808; --orange-border:#9a3412; --orange-text:#fdba74;
+    --red-bg:    #2a0f12; --red-border:#9b1c1c;   --red-text:#fca5a5;
+
+    --cell-l0: #166534;
+    --cell-l1: #854d0e;
+    --cell-l2: #9a3412;
+    --cell-l3: #991b1b;
+    --cell-event: #f3f4f6;
+    --cell-divider: rgba(0,0,0,0.4);
+    --cell-border: #2a313c;
+
+    --badge-bg-est: #1f242c;  --badge-text-est: #9ba3af;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    margin: 0; padding: 18px;
+    background: var(--bg); color: var(--text);
+    font-size: 14px; line-height: 1.5;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+  .container { max-width: 980px; margin: 0 auto; }
+  h1 { margin: 0 0 2px; font-size: 22px; letter-spacing: -0.01em; }
+  .sub { color: var(--text-muted); margin-bottom: 16px; font-size: 13px; }
+
+  .meta {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    margin-bottom: 18px; padding: 10px 14px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  }
+  .meta .group { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+  .meta .label { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+  .meta .value { font-weight: 600; font-size: 13px; color: var(--text); }
+  .controls { display: flex; align-items: center; gap: 10px; }
+  .controls label { font-size: 12px; color: var(--text-muted); }
+  .controls input[type="number"] {
+    width: 60px; padding: 4px 6px; font-size: 13px;
+    border: 1px solid var(--border-2); border-radius: 4px;
+    background: var(--bg); color: var(--text);
+  }
+  .actions { display: flex; align-items: center; gap: 8px; }
+  .icon-btn {
+    width: 32px; height: 32px; padding: 0;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--surface-2); color: var(--text);
+    cursor: pointer; font-size: 15px; line-height: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .icon-btn:hover { background: var(--border); }
+  .refresh-btn {
+    padding: 7px 13px; background: var(--btn-bg); color: var(--btn-text); border: 0;
+    border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600;
+  }
+  .refresh-btn:hover { opacity: 0.85; }
+
+  h2 {
+    font-size: 12px; margin: 22px 0 8px;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); font-weight: 700;
+  }
+  h2 .sub-h2 { font-weight: 400; color: var(--text-faint); text-transform: none; letter-spacing: 0; }
+
+  /* "Open today?" cards */
+  .tickers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .ticker-card {
+    padding: 14px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface);
+  }
+  .ticker-card .symbol { font-weight: 700; font-size: 18px; }
+  .ticker-card .desc { font-size: 11px; color: var(--text-faint); margin-bottom: 10px; }
+  .ticker-card .verdict { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .ticker-card .detail { font-size: 12px; color: var(--text); line-height: 1.45; opacity: 0.9; }
+  .ticker-card .detail strong { color: var(--text); opacity: 1; }
+  .ticker-card.r-red    { border-color: var(--red-border);    background: var(--red-bg); }
+  .ticker-card.r-red    .verdict { color: var(--red-text); }
+  .ticker-card.r-orange { border-color: var(--orange-border); background: var(--orange-bg); }
+  .ticker-card.r-orange .verdict { color: var(--orange-text); }
+  .ticker-card.r-yellow { border-color: var(--yellow-border); background: var(--yellow-bg); }
+  .ticker-card.r-yellow .verdict { color: var(--yellow-text); }
+  .ticker-card.r-green  { border-color: var(--green-border);  background: var(--green-bg); }
+  .ticker-card.r-green  .verdict { color: var(--green-text); }
+
+  /* Entry calendar — horizontal day strips */
+  .cal {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px; overflow-x: auto;
+  }
+  .cal-row { display: grid; grid-template-columns: 90px 1fr; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .cal-row:last-child { margin-bottom: 0; }
+  .cal-row .label { font-weight: 700; font-size: 13px; color: var(--text); }
+  .cal-row .label .desc { display: block; font-weight: 400; color: var(--text-faint); font-size: 11px; }
+  .strip {
+    display: flex; height: 28px; border-radius: 4px; overflow: hidden;
+    border: 1px solid var(--cell-border); min-width: 600px;
+  }
+  .day {
+    flex: 1; min-width: 4px;
+    border-right: 1px solid var(--cell-divider);
+    position: relative;
+  }
+  .day:last-child { border-right: 0; }
+  .day.today { box-shadow: inset 0 0 0 2px var(--focus); z-index: 2; }
+  .day.lvl-0 { background: var(--cell-l0); }
+  .day.lvl-1 { background: var(--cell-l1); }
+  .day.lvl-2 { background: var(--cell-l2); }
+  .day.lvl-3 { background: var(--cell-l3); }
+  .day.event { background: var(--cell-event); }
+
+  .axis { display: flex; min-width: 600px; margin-top: 4px; font-size: 10px; color: var(--text-faint); }
+  .axis-tick { flex: 1; text-align: left; }
+  .axis-tick.weekly { border-left: 1px dashed var(--border); padding-left: 2px; }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 14px;
+    margin-top: 12px; padding: 10px 14px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    font-size: 12px; color: var(--text-muted);
+  }
+  .legend-item { display: flex; align-items: center; gap: 7px; }
+  .swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(127,127,127,0.25); }
+  .swatch.l0 { background: var(--cell-l0); }
+  .swatch.l1 { background: var(--cell-l1); }
+  .swatch.l2 { background: var(--cell-l2); }
+  .swatch.l3 { background: var(--cell-l3); }
+  .swatch.le { background: var(--cell-event); }
+
+  /* Earnings table */
+  .table { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; }
+  .row {
+    display: grid; grid-template-columns: 80px 110px 1fr 90px;
+    padding: 8px 0; font-size: 13px; gap: 8px; align-items: center;
+  }
+  .row + .row { border-top: 1px dashed var(--border); }
+  .row .ticker { font-weight: 700; }
+  .row .date   { color: var(--text-muted); }
+  .row .badge {
+    display: inline-block; padding: 2px 7px; border-radius: 10px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .badge.b-red    { background: var(--red-bg);    color: var(--red-text);    border: 1px solid var(--red-border); }
+  .badge.b-green  { background: var(--green-bg);  color: var(--green-text);  border: 1px solid var(--green-border); }
+  .badge.b-est    { background: var(--badge-bg-est); color: var(--badge-text-est); }
+
+  .footer { margin-top: 22px; font-size: 11px; color: var(--text-faint); }
+  .footer code { background: var(--surface-2); padding: 1px 5px; border-radius: 3px; color: var(--text); }
+
+  /* =========================================================================
+     Mobile / narrow viewport (≤ 640px)
+     ========================================================================= */
+  @media (max-width: 640px) {
+    body { padding: 12px; font-size: 13px; }
+    h1 { font-size: 19px; }
+    .sub { font-size: 12px; }
+
+    .meta {
+      flex-direction: column; align-items: stretch; gap: 10px;
+      padding: 10px 12px;
+    }
+    .meta .group { gap: 14px; }
+    .meta .label { font-size: 10px; }
+    .actions { justify-content: space-between; }
+
+    .tickers { grid-template-columns: 1fr; }
+
+    /* Stack the calendar label above the strip on mobile, keep horizontal scroll */
+    .cal { padding: 12px; -webkit-overflow-scrolling: touch; }
+    .cal-row { grid-template-columns: 1fr; gap: 6px; margin-bottom: 14px; }
+    .cal-row .label .desc { display: inline; margin-left: 6px; }
+    .strip, .axis { min-width: 540px; }
+
+    .row {
+      grid-template-columns: 60px 80px 1fr;
+      grid-template-areas: "tic dat det" "tic dat bdg";
+      gap: 4px 10px; padding: 10px 0;
+    }
+    .row .ticker { grid-area: tic; }
+    .row .date   { grid-area: dat; }
+    .row > div:nth-child(3) { grid-area: det; font-size: 12px; }
+    .row > div:nth-child(4) { grid-area: bdg; text-align: left !important; }
+
+    .legend { gap: 8px; padding: 10px 12px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>45 DTE Earnings Risk Tracker</h1>
+  <div class="sub">TQQQ · QQQ · TSLL — when is it safe to open a 45-DTE contract today, given upcoming earnings?</div>
+
+  <div class="meta">
+    <div class="group">
+      <div>
+        <div class="label">Today</div>
+        <div class="value" id="today">—</div>
+      </div>
+      <div>
+        <div class="label">Data as of</div>
+        <div class="value" id="data-date">—</div>
+      </div>
+      <div class="controls">
+        <label for="dte-input">DTE</label>
+        <input id="dte-input" type="number" min="7" max="120" step="1" value="45">
+      </div>
+    </div>
+    <div class="actions">
+      <button class="icon-btn" id="theme-toggle" title="Toggle dark / light mode" aria-label="Toggle theme">🌙</button>
+      <button class="refresh-btn" id="refresh" title="Ask Claude to update the bundled earnings dates">Refresh dates</button>
+    </div>
+  </div>
+
+  <h2>Open a contract today?</h2>
+  <div class="tickers" id="tickers"></div>
+
+  <h2>Entry calendar — next 75 days <span class="sub-h2">(each cell = 1 day; color = risk if you open that day)</span></h2>
+  <div class="cal" id="cal"></div>
+  <div class="legend">
+    <div class="legend-item"><span class="swatch l0"></span> Clean — no earnings inside contract life</div>
+    <div class="legend-item"><span class="swatch l1"></span> Early (days 0–15) — IV crush, recoverable</div>
+    <div class="legend-item"><span class="swatch l2"></span> Mid (days 15–30) — meaningful risk</div>
+    <div class="legend-item"><span class="swatch l3"></span> Late (days 30–45) — high gamma, avoid</div>
+    <div class="legend-item"><span class="swatch le"></span> Earnings day itself</div>
+  </div>
+
+  <h2>Earnings on the radar</h2>
+  <div class="table" id="table"></div>
+
+  <div class="footer">
+    Sources: company IR pages, Nasdaq, MarketBeat earnings calendars (May 8, 2026 snapshot).
+    Click <code>Refresh dates</code> to ask Claude to re-check confirmed dates.
+    AMC = after market close, BMO = before market open.
+    <br>
+    Risk model: an earnings event is mapped to where it falls inside the contract's 45-day life. Days 30–45 = high gamma = darkest red; earlier overlap is less severe but still worth pricing in.
+  </div>
+</div>
+
+<script>
+// =========================================================================
+// Theme toggle (defaults to dark; persisted in localStorage)
+// =========================================================================
+(function initTheme() {
+  let stored = null;
+  try { stored = localStorage.getItem("ert-theme"); } catch(e) {}
+  const theme = stored === "light" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", theme);
+})();
+
+document.getElementById("theme-toggle").addEventListener("click", () => {
+  const cur = document.documentElement.getAttribute("data-theme");
+  const next = cur === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  document.getElementById("theme-toggle").textContent = next === "dark" ? "🌙" : "☀️";
+  try { localStorage.setItem("ert-theme", next); } catch(e) {}
+});
+// Sync icon on first paint
+(function syncIcon() {
+  const cur = document.documentElement.getAttribute("data-theme");
+  document.getElementById("theme-toggle").textContent = cur === "dark" ? "🌙" : "☀️";
+})();
+
+// =========================================================================
+// Bundled dataset — Mag 7 + TSLA earnings dates
+// =========================================================================
+const DATA_AS_OF = "2026-05-08";
+
+const EARNINGS = [
+  { ticker: "NVDA",  company: "Nvidia",    date: "2026-05-20", session: "AMC", confirmed: true  },
+  { ticker: "TSLA",  company: "Tesla",     date: "2026-07-22", session: "AMC", confirmed: false },
+  { ticker: "GOOGL", company: "Alphabet",  date: "2026-07-28", session: "AMC", confirmed: true  },
+  { ticker: "META",  company: "Meta",      date: "2026-07-29", session: "AMC", confirmed: true  },
+  { ticker: "MSFT",  company: "Microsoft", date: "2026-07-29", session: "AMC", confirmed: true  },
+  { ticker: "AMZN",  company: "Amazon",    date: "2026-07-30", session: "AMC", confirmed: true  },
+  { ticker: "AAPL",  company: "Apple",     date: "2026-07-30", session: "AMC", confirmed: true  }
+];
+
+const TICKER_MAP = {
+  TQQQ: ["AAPL","MSFT","NVDA","AMZN","META","GOOGL","TSLA"],
+  QQQ:  ["AAPL","MSFT","NVDA","AMZN","META","GOOGL","TSLA"],
+  TSLL: ["TSLA"]
+};
+const TICKER_DESC = {
+  TQQQ: "3x leveraged Nasdaq-100",
+  QQQ:  "Nasdaq-100 ETF",
+  TSLL: "2x leveraged TSLA"
+};
+
+// =========================================================================
+// Date + risk helpers
+// =========================================================================
+function parseISO(s) { return new Date(s + "T12:00:00"); }
+function fmt(d)      { return d.toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
+function fmtFull(d)  { return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" }); }
+function addDays(d, n) {
+  const x = new Date(d);
+  x.setHours(0,0,0,0);
+  x.setDate(x.getDate() + n);
+  return x;
+}
+function dayDiff(a, b) {
+  return Math.round((b - a) / 86400000);
+}
+
+function classify(openDate, dte, holding) {
+  const watchSet = TICKER_MAP[holding];
+  const expiry = addDays(openDate, dte);
+  let level = 0;
+  const hits = [];
+  for (const e of EARNINGS) {
+    if (!watchSet.includes(e.ticker)) continue;
+    const ed = parseISO(e.date);
+    if (ed < openDate || ed > expiry) continue;
+    const dayInto = dayDiff(openDate, ed);
+    const earlyCutoff = Math.round(dte * (15 / 45));
+    const midCutoff   = Math.round(dte * (30 / 45));
+    let lvl;
+    if (dayInto <= earlyCutoff)      lvl = 1;
+    else if (dayInto <= midCutoff)   lvl = 2;
+    else                              lvl = 3;
+    hits.push({ ...e, dayInto, lvl });
+    if (lvl > level) level = lvl;
+  }
+  hits.sort((a,b) => a.date.localeCompare(b.date));
+  return { level, hits };
+}
+
+function nextSafeOpen(today, dte, holding, maxLookAhead = 120) {
+  for (let i = 0; i <= maxLookAhead; i++) {
+    const d = addDays(today, i);
+    if (classify(d, dte, holding).level === 0) return { date: d, daysOut: i };
+  }
+  return null;
+}
+
+// =========================================================================
+// Render
+// =========================================================================
+const today = new Date();
+today.setHours(0,0,0,0);
+let DTE = 45;
+
+document.getElementById("today").textContent     = fmtFull(today);
+document.getElementById("data-date").textContent = fmtFull(parseISO(DATA_AS_OF));
+
+function levelClass(lvl) { return "r-" + (lvl === 0 ? "green" : lvl === 1 ? "yellow" : lvl === 2 ? "orange" : "red"); }
+function levelLabel(lvl) { return lvl === 0 ? "✅ Safe" : lvl === 1 ? "🟡 Caution" : lvl === 2 ? "🟠 Risky" : "🔴 Avoid"; }
+
+function renderCards() {
+  const tickEl = document.getElementById("tickers");
+  tickEl.innerHTML = "";
+  ["TQQQ","QQQ","TSLL"].forEach(h => {
+    const r = classify(today, DTE, h);
+    const card = document.createElement("div");
+    card.className = "ticker-card " + levelClass(r.level);
+
+    let detail;
+    if (r.level === 0) {
+      const watchSet = TICKER_MAP[h];
+      const nextEarn = EARNINGS
+        .filter(e => watchSet.includes(e.ticker) && parseISO(e.date) > addDays(today, DTE))
+        .sort((a,b) => a.date.localeCompare(b.date))[0];
+      if (nextEarn) {
+        const ne = parseISO(nextEarn.date);
+        const days = dayDiff(today, ne);
+        detail = "Clear for " + DTE + " DTE. Next watch: <strong>" + nextEarn.ticker + "</strong> on " + fmt(ne) + " (" + days + "d out)";
+      } else {
+        detail = "No earnings on the radar within the data horizon.";
+      }
+    } else {
+      const hit = r.hits[0];
+      const ed = parseISO(hit.date);
+      const safe = nextSafeOpen(today, DTE, h);
+      const safeTxt = safe
+        ? "<br>Earliest safe entry: <strong>" + fmt(safe.date) + "</strong> (in " + safe.daysOut + "d)"
+        : "<br>No safe entry within 120 days.";
+      detail =
+        "<strong>" + hit.ticker + "</strong> reports " + fmt(ed) +
+        " — that's day " + hit.dayInto + " of a " + DTE + "-day contract " +
+        "(" + (hit.lvl === 1 ? "early" : hit.lvl === 2 ? "mid" : "late, high-gamma") + " zone)." +
+        safeTxt;
+    }
+
+    card.innerHTML =
+      '<div class="symbol">' + h + '</div>' +
+      '<div class="desc">'   + TICKER_DESC[h] + '</div>' +
+      '<div class="verdict">' + levelLabel(r.level) + '</div>' +
+      '<div class="detail">'  + detail + '</div>';
+    tickEl.appendChild(card);
+  });
+}
+
+function renderCalendar() {
+  const calEl = document.getElementById("cal");
+  calEl.innerHTML = "";
+  const SPAN = 75;
+
+  ["TQQQ","QQQ","TSLL"].forEach(h => {
+    const row = document.createElement("div");
+    row.className = "cal-row";
+
+    const watchSet = TICKER_MAP[h];
+    const eventDates = new Set(
+      EARNINGS.filter(e => watchSet.includes(e.ticker)).map(e => e.date)
+    );
+
+    let strip = '<div class="strip">';
+    for (let i = 0; i < SPAN; i++) {
+      const d = addDays(today, i);
+      const iso = d.toISOString().slice(0,10);
+      const isEvent = eventDates.has(iso);
+      const lvl = classify(d, DTE, h).level;
+      const cls = isEvent ? "event" : "lvl-" + lvl;
+      const isToday = i === 0 ? " today" : "";
+      const tip = isEvent
+        ? d.toLocaleDateString("en-US",{ month:"short", day:"numeric" }) + " — earnings day"
+        : d.toLocaleDateString("en-US",{ month:"short", day:"numeric" }) + " — open today: " + (lvl===0?"clean":lvl===1?"early":lvl===2?"mid":"late");
+      strip += '<div class="day ' + cls + isToday + '" title="' + tip + '"></div>';
+    }
+    strip += '</div>';
+
+    let axis = '<div class="axis">';
+    for (let i = 0; i < SPAN; i++) {
+      const d = addDays(today, i);
+      if (i === 0 || i % 7 === 0) {
+        axis += '<div class="axis-tick weekly">' + fmt(d) + '</div>';
+      } else {
+        axis += '<div class="axis-tick"></div>';
+      }
+    }
+    axis += '</div>';
+
+    row.innerHTML =
+      '<div class="label">' + h +
+        '<span class="desc">' + TICKER_DESC[h] + '</span>' +
+      '</div>' +
+      '<div>' + strip + axis + '</div>';
+    calEl.appendChild(row);
+  });
+}
+
+function renderTable() {
+  const tEl = document.getElementById("table");
+  const sorted = [...EARNINGS].sort((a,b) => a.date.localeCompare(b.date));
+  tEl.innerHTML = sorted.map(e => {
+    const ed = parseISO(e.date);
+    const days = dayDiff(today, ed);
+    const session = e.session === "AMC" ? "after close" : e.session === "BMO" ? "pre-market" : "TBD";
+    let badge;
+    if (days < 0)        badge = '<span class="badge b-est">Past</span>';
+    else if (days <= DTE) badge = '<span class="badge b-red">In window</span>';
+    else                  badge = '<span class="badge b-green">Outside</span>';
+    const est = e.confirmed ? "" : ' <span class="badge b-est">est.</span>';
+    return '<div class="row">' +
+      '<div class="ticker">' + e.ticker + '</div>' +
+      '<div class="date">' + fmt(ed) + '</div>' +
+      '<div>' + e.company + ' &middot; ' + session + est + ' &middot; <span style="color:var(--text-faint)">' + (days < 0 ? Math.abs(days) + "d ago" : "in " + days + "d") + '</span></div>' +
+      '<div style="text-align:right">' + badge + '</div>' +
+    '</div>';
+  }).join("");
+}
+
+function renderAll() {
+  renderCards();
+  renderCalendar();
+  renderTable();
+}
+renderAll();
+
+// DTE input
+document.getElementById("dte-input").addEventListener("change", e => {
+  const v = parseInt(e.target.value, 10);
+  if (!isNaN(v) && v >= 7 && v <= 120) {
+    DTE = v;
+    renderAll();
+  }
+});
+
+// Refresh button
+document.getElementById("refresh").addEventListener("click", () => {
+  if (typeof window.sendPrompt === "function") {
+    window.sendPrompt(
+      "Refresh the earnings-risk-tracker artifact with the latest confirmed earnings dates for AAPL, MSFT, NVDA, AMZN, META, GOOGL, and TSLA. Update DATA_AS_OF and the EARNINGS array."
+    );
+  } else {
+    alert("Refresh hook unavailable — open a chat and ask Claude to refresh the earnings tracker.");
+  }
+});
+</script>
+</body>
+</html>
