@@ -2,7 +2,8 @@
 
 A 45 DTE earnings risk dashboard for TQQQ / QQQ / TSLL options. Hosted as a static page on GitHub Pages and refreshed weekly by a Claude scheduled task.
 
-**Live:** https://bixBeta.github.io/earnings-risk-tracker/
+**Live:** https://bixbeta.github.io/earnings-risk-tracker/
+**How to read it:** [insights.md](./insights.md) — plain-English walkthrough of the dashboard, color tiers, and how to use it.
 
 ## How it stays up to date
 

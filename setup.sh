@@ -26,10 +26,22 @@ else
   echo "    nothing to commit"
 fi
 
-echo "==> 2/4 Verify GitHub Pages config"
+echo "==> 2/4 Configure GitHub Pages (branch source)"
 if command -v gh >/dev/null 2>&1; then
-  gh api -X GET "repos/bixBeta/earnings-risk-tracker/pages" 2>/dev/null \
-    | grep -E '"html_url"|"status"' || echo "    (Pages may still be initializing — first build takes ~1 min)"
+  # Force source to main/root (GitHub now defaults new repos to Actions mode,
+  # which would 404 since we don't ship a workflow).
+  if gh api "repos/bixBeta/earnings-risk-tracker/pages" >/dev/null 2>&1; then
+    gh api -X PUT "repos/bixBeta/earnings-risk-tracker/pages" \
+      -F 'build_type=legacy' \
+      -f 'source[branch]=main' \
+      -f 'source[path]=/' >/dev/null && echo "    source set to main / root"
+  else
+    gh api -X POST "repos/bixBeta/earnings-risk-tracker/pages" \
+      -f 'source[branch]=main' \
+      -f 'source[path]=/' >/dev/null && echo "    Pages enabled (main / root)"
+  fi
+  gh api "repos/bixBeta/earnings-risk-tracker/pages" 2>/dev/null \
+    | grep -E '"html_url"|"status"' || true
 else
   echo "    gh CLI not found — verify manually at:"
   echo "    https://github.com/bixBeta/earnings-risk-tracker/settings/pages"
