@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<script type="application/json" id="cowork-artifact-meta">
+<!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
 {
   "name": "Earnings Risk Tracker",
   "schemaVersion": 1,
@@ -302,7 +301,7 @@
   <div class="table" id="table"></div>
 
   <div class="footer">
-    Sources: company IR pages, Nasdaq, MarketBeat earnings calendars (May 9, 2026 snapshot).
+    Sources: company IR pages, Nasdaq, MarketBeat earnings calendars (May 17, 2026 snapshot).
     Click <code>Refresh dates</code> to ask Claude to re-check confirmed dates.
     AMC = after market close, BMO = before market open.
     <br>
@@ -337,16 +336,16 @@ document.getElementById("theme-toggle").addEventListener("click", () => {
 // =========================================================================
 // Bundled dataset — Mag 7 + TSLA earnings dates
 // =========================================================================
-const DATA_AS_OF = "2026-05-09";
+const DATA_AS_OF = "2026-05-17";
 
 const EARNINGS = [
   { ticker: "NVDA",  company: "Nvidia",    date: "2026-05-20", session: "AMC", confirmed: true  },
-  { ticker: "TSLA",  company: "Tesla",     date: "2026-07-22", session: "AMC", confirmed: false },
-  { ticker: "GOOGL", company: "Alphabet",  date: "2026-07-22", session: "AMC", confirmed: false },
+  { ticker: "TSLA",  company: "Tesla",     date: "2026-07-29", session: "AMC", confirmed: true  },
+  { ticker: "GOOGL", company: "Alphabet",  date: "2026-07-28", session: "AMC", confirmed: false },
   { ticker: "MSFT",  company: "Microsoft", date: "2026-07-28", session: "AMC", confirmed: true  },
-  { ticker: "META",  company: "Meta",      date: "2026-07-29", session: "AMC", confirmed: false },
+  { ticker: "META",  company: "Meta",      date: "2026-08-05", session: "AMC", confirmed: false },
   { ticker: "AMZN",  company: "Amazon",    date: "2026-07-30", session: "AMC", confirmed: true  },
-  { ticker: "AAPL",  company: "Apple",     date: "2026-07-30", session: "AMC", confirmed: false }
+  { ticker: "AAPL",  company: "Apple",     date: "2026-07-30", session: "AMC", confirmed: true  }
 ];
 
 const TICKER_MAP = {
