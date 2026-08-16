@@ -301,7 +301,7 @@
   <div class="table" id="table"></div>
 
   <div class="footer">
-    Sources: company IR pages, Nasdaq, MarketBeat, WallStreetZen earnings calendars (Aug 13, 2026 snapshot).
+    Sources: company IR pages, Nasdaq, MarketBeat, WallStreetZen earnings calendars (Aug 16, 2026 snapshot).
     Click <code>Refresh dates</code> to ask Claude to re-check confirmed dates.
     AMC = after market close, BMO = before market open.
     <br>
@@ -336,7 +336,7 @@ document.getElementById("theme-toggle").addEventListener("click", () => {
 // =========================================================================
 // Bundled dataset — Mag 7 + TSLA earnings dates
 // =========================================================================
-const DATA_AS_OF = "2026-08-13";
+const DATA_AS_OF = "2026-08-16";
 
 const EARNINGS = [
   { ticker: "GOOGL", company: "Alphabet",  date: "2026-07-22", session: "AMC", confirmed: true },
@@ -351,7 +351,7 @@ const EARNINGS = [
   { ticker: "MSFT",  company: "Microsoft", date: "2026-10-27", session: "AMC", confirmed: false },
   { ticker: "TSLA",  company: "Tesla",     date: "2026-10-28", session: "AMC", confirmed: false },
   { ticker: "META",  company: "Meta",      date: "2026-10-28", session: "AMC", confirmed: false },
-  { ticker: "AAPL",  company: "Apple",     date: "2026-10-29", session: "AMC", confirmed: false }
+  { ticker: "AAPL",  company: "Apple",     date: "2026-10-29", session: "AMC", confirmed: true }
 ];
 
 const TICKER_MAP = {
